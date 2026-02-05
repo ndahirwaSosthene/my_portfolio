@@ -526,6 +526,7 @@ Replace placeholder text with actual content:
 - **Typography**:
   - Headings: Large, bold, sans-serif (possibly Inter, Poppins, or custom)
   - Body: Clean sans-serif, good readability
+  - fonts: Neue montreal, Inter tight, Playfair display, clash display
   
 - **Icons**: Use React Icons or custom SVGs
 
