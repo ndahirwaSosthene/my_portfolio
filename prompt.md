@@ -17,7 +17,6 @@ You are developing a modern, creative portfolio website for INEZA Ndahirwa Sosth
 
 ## DESIGN FILES & ASSETS
 Reference the following design files for visual guidance:
-All in designs folder
 - `1536w_default.png` - Project showcase/branding reference (Gain project)
 - `home-page.png` - Homepage layout and hero section
 - `about-me_bio.png` - Biography section design
