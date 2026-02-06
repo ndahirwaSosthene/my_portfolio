@@ -48,48 +48,47 @@ const Navigation = ({ onContactClick }) => {
           isScrolled ? 'bg-dark/90 backdrop-blur-md shadow-lg' : 'bg-transparent'
         }`}
       >
-        <nav className="section-container">
+        <nav className="max-w-[1400px] mx-auto px-10 lg:px-16">
           <div className="flex items-center justify-between h-20">
-            {/* Logo */}
-            <Link to="/" className="relative group">
-              <div className="bg-primary px-4 py-2 transform -skew-x-6 transition-transform group-hover:skew-x-0">
-                <span className="block skew-x-6 group-hover:skew-x-0 transition-transform font-bold text-white text-xl">
+            {/* Logo - Left */}
+            <Link to="/" className="relative group flex-shrink-0">
+              <div className="bg-primary px-4 py-2 rounded-sm transition-transform group-hover:scale-105">
+                <span className="block font-nav font-bold text-white text-lg tracking-wide">
                   NDAHIRWA
                 </span>
               </div>
             </Link>
 
-            {/* Desktop Navigation */}
+            {/* Get in touch - Center */}
+            <button
+              onClick={onContactClick}
+              className="hidden md:block text-light-100 hover:text-primary transition-colors font-nav font-medium text-sm"
+            >
+              Get in touch
+            </button>
+
+            {/* Desktop Navigation - Right */}
             <div className="hidden md:flex items-center gap-8">
-              <button
-                onClick={onContactClick}
-                className="text-light-100 hover:text-primary transition-colors font-medium"
-              >
-                Get in touch
-              </button>
-              
-              <div className="flex items-center gap-6">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.path}
-                    to={link.path}
-                    className="relative group py-2"
+              {navLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className="relative group py-2"
+                >
+                  <span
+                    className={`font-nav font-medium text-sm transition-colors ${
+                      isActive(link.path) ? 'text-light-100' : 'text-light-100/70 hover:text-light-100'
+                    }`}
                   >
-                    <span
-                      className={`font-medium transition-colors ${
-                        isActive(link.path) ? 'text-primary' : 'text-light-100 hover:text-primary'
-                      }`}
-                    >
-                      {link.name}
-                    </span>
-                    <span
-                      className={`absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300 ${
-                        isActive(link.path) ? 'w-full' : 'w-0 group-hover:w-full'
-                      }`}
-                    />
-                  </Link>
-                ))}
-              </div>
+                    {link.name}
+                  </span>
+                  <span
+                    className={`absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300 ${
+                      isActive(link.path) ? 'w-full' : 'w-0 group-hover:w-full'
+                    }`}
+                  />
+                </Link>
+              ))}
             </div>
 
             {/* Mobile Menu Button */}
@@ -138,10 +137,13 @@ const Navigation = ({ onContactClick }) => {
                     <Link
                       to={link.path}
                       className={`text-5xl sm:text-6xl font-display font-bold transition-colors ${
-                        isActive(link.path) ? 'text-primary' : 'text-light-100 hover:text-primary'
+                        isActive(link.path) ? 'text-light-100' : 'text-light-100/70 hover:text-light-100'
                       }`}
                     >
                       {link.name}
+                      {isActive(link.path) && (
+                        <span className="block h-1 bg-primary mt-2 w-20" />
+                      )}
                     </Link>
                   </motion.div>
                 ))}

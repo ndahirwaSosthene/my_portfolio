@@ -36,7 +36,8 @@ export default {
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
-        display: ['Playfair Display', 'serif'],
+        display: ['Inter Tight', 'system-ui', 'sans-serif'],
+        nav: ['Manrope', 'system-ui', 'sans-serif'],
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-out forwards',
