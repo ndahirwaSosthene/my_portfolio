@@ -1,9 +1,7 @@
-import { useState, useEffect, useMemo } from 'react'
-import { useSearchParams } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
-import ProjectCard from '../components/ProjectCard/ProjectCard'
-import CTA from '../components/CTA/CTA'
-import projects, { getAllTags } from '../data/projects'
+import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import { HiArrowRight } from 'react-icons/hi'
+import projects from '../data/projects'
 
 const pageVariants = {
   initial: { opacity: 0 },
@@ -11,187 +9,110 @@ const pageVariants = {
   exit: { opacity: 0, transition: { duration: 0.3 } }
 }
 
+const ProjectCard = ({ project, index }) => {
+  return (
+    <Link to={`/project/${project.slug}`}>
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: index * 0.1 }}
+        className={`w-96 h-80 relative ${project.color} rounded-2xl overflow-hidden group cursor-pointer`}
+      >
+        {/* Image placeholder - centered */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-72 h-56 bg-white/10 rounded-lg flex items-center justify-center">
+            <span className="text-white/30 text-6xl font-display font-bold">
+              {project.title.charAt(0)}
+            </span>
+          </div>
+        </div>
+        
+        {/* Title row at bottom */}
+        <div className="absolute left-7 right-7 bottom-5 flex justify-between items-center">
+          <h3 className="text-white text-xl font-medium font-['Poppins']">
+            {project.title}
+          </h3>
+          <div className="w-5 h-5 border-2 border-white rounded-sm flex items-center justify-center group-hover:bg-white transition-colors">
+            <HiArrowRight className="text-white group-hover:text-black w-3 h-3 -rotate-45" />
+          </div>
+        </div>
+      </motion.div>
+    </Link>
+  )
+}
+
 const Projects = ({ onContactClick }) => {
-  const [searchParams, setSearchParams] = useSearchParams()
-  const [activeFilter, setActiveFilter] = useState('all')
-  
-  const allTags = useMemo(() => getAllTags(), [])
-
-  // Handle filter from URL parameters (for "Proof" button navigation)
-  useEffect(() => {
-    const filterParam = searchParams.get('filter')
-    if (filterParam) {
-      // Convert URL param to tag format
-      const matchedTag = allTags.find(
-        tag => tag.toLowerCase().replace(/\s+/g, '-') === filterParam.toLowerCase()
-      )
-      if (matchedTag) {
-        setActiveFilter(matchedTag)
-      }
-    }
-  }, [searchParams, allTags])
-
-  // Filter projects based on active filter
-  const filteredProjects = useMemo(() => {
-    if (activeFilter === 'all') return projects
-    return projects.filter(project => 
-      project.tags.some(tag => tag === activeFilter)
-    )
-  }, [activeFilter])
-
-  // Handle filter change
-  const handleFilterChange = (filter) => {
-    setActiveFilter(filter)
-    if (filter === 'all') {
-      setSearchParams({})
-    } else {
-      setSearchParams({ filter: filter.toLowerCase().replace(/\s+/g, '-') })
-    }
-  }
-
-  // Clear filter
-  const clearFilter = () => {
-    setActiveFilter('all')
-    setSearchParams({})
-  }
-
   return (
     <motion.div
       variants={pageVariants}
       initial="initial"
       animate="animate"
       exit="exit"
-      className="pt-20" // Account for fixed header
+      className="bg-dark"
     >
-      {/* Hero Section */}
-      <section className="section-padding bg-dark">
-        <div className="section-container">
-          <motion.div
+      {/* Main Content */}
+      <section className="pt-32 pb-24 px-10 lg:px-20">
+        <div className="max-w-[1400px] mx-auto">
+          {/* Title */}
+          <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
+            className="text-7xl lg:text-8xl font-display font-medium text-stone-100 capitalize mb-16"
           >
-            <p className="text-primary uppercase tracking-widest text-sm mb-2">
-              Portfolio
-            </p>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-bold text-light-100 mb-6">
-              My Projects
-            </h1>
-            <p className="text-light-200/70 text-lg max-w-2xl mx-auto">
-              A collection of my work spanning UI/UX design, mobile app development, 
-              and branding. Each project represents a unique challenge and creative solution.
-            </p>
-          </motion.div>
-
-          {/* Filter Chips */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex flex-wrap justify-center gap-3 mb-12"
-          >
-            <motion.button
-              onClick={() => handleFilterChange('all')}
-              className={`px-5 py-2.5 rounded-full font-medium transition-all ${
-                activeFilter === 'all'
-                  ? 'bg-primary text-white'
-                  : 'bg-dark-50 text-light-200/70 hover:text-light-100 hover:bg-dark-100'
-              }`}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              All Projects
-            </motion.button>
-            
-            {allTags.map((tag) => (
-              <motion.button
-                key={tag}
-                onClick={() => handleFilterChange(tag)}
-                className={`px-5 py-2.5 rounded-full font-medium transition-all ${
-                  activeFilter === tag
-                    ? 'bg-primary text-white'
-                    : 'bg-dark-50 text-light-200/70 hover:text-light-100 hover:bg-dark-100'
-                }`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {tag}
-              </motion.button>
-            ))}
-          </motion.div>
-
-          {/* Active Filter Indicator */}
-          <AnimatePresence>
-            {activeFilter !== 'all' && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="text-center mb-8"
-              >
-                <span className="text-light-200/50 text-sm">
-                  Showing {filteredProjects.length} project{filteredProjects.length !== 1 ? 's' : ''} tagged with{' '}
-                  <span className="text-primary font-medium">"{activeFilter}"</span>
-                </span>
-                <button
-                  onClick={clearFilter}
-                  className="ml-3 text-primary hover:text-primary-400 transition-colors text-sm underline"
-                >
-                  Clear filter
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
+            Projects
+          </motion.h1>
 
           {/* Projects Grid */}
-          <motion.div 
-            layout
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-          >
-            <AnimatePresence mode="popLayout">
-              {filteredProjects.map((project, index) => (
-                <motion.div
-                  key={project.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <ProjectCard project={project} index={index} />
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </motion.div>
-
-          {/* Empty State */}
-          {filteredProjects.length === 0 && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-center py-16"
-            >
-              <div className="text-6xl mb-4">🔍</div>
-              <h3 className="text-xl font-display font-bold text-light-100 mb-2">
-                No projects found
-              </h3>
-              <p className="text-light-200/70 mb-4">
-                There are no projects matching the selected filter.
-              </p>
-              <button
-                onClick={clearFilter}
-                className="text-primary hover:text-primary-400 transition-colors underline"
-              >
-                View all projects
-              </button>
-            </motion.div>
-          )}
+          <div className="flex flex-wrap gap-8 justify-start">
+            {projects.map((project, index) => (
+              <ProjectCard key={project.id} project={project} index={index} />
+            ))}  
+          </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <CTA onContactClick={onContactClick} />
+      <section className="relative py-24 px-10 lg:px-20 bg-dark overflow-hidden">
+        {/* Decorative rotated cards */}
+        <div className="absolute left-0 top-0 bottom-0 w-48">
+          <div className="w-44 h-36 absolute -left-16 -top-8 origin-top-left rotate-[50deg] bg-zinc-400 rounded-lg" />
+          <div className="w-44 h-36 absolute -left-16 top-28 origin-top-left rotate-[7deg] bg-zinc-300 rounded-lg" />
+          <div className="w-44 h-36 absolute -left-20 top-60 origin-top-left -rotate-[8deg] bg-zinc-500 rounded-lg" />
+        </div>
+
+        <div className="max-w-[500px] mx-auto text-center">
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-stone-100 text-base font-mono uppercase leading-4 tracking-wide mb-12"
+          >
+            Ready to bring your ideas to life? Let's create something amazing together.
+          </motion.p>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="flex items-center justify-center gap-14"
+          >
+            <button 
+              onClick={onContactClick}
+              className="text-stone-100 text-xs font-mono uppercase tracking-wide hover:text-primary transition-colors"
+            >
+              Contacts
+            </button>
+            <span className="text-stone-100 text-xs font-mono uppercase">or</span>
+            <button 
+              onClick={onContactClick}
+              className="text-stone-100 text-xs font-mono uppercase tracking-wide hover:text-primary transition-colors"
+            >
+              Fill out form
+            </button>
+          </motion.div>
+        </div>
+      </section>
     </motion.div>
   )
 }

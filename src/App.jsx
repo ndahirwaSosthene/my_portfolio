@@ -10,6 +10,7 @@ import LoadingSpinner from './components/LoadingSpinner/LoadingSpinner'
 const Home = lazy(() => import('./pages/Home'))
 const About = lazy(() => import('./pages/About'))
 const Projects = lazy(() => import('./pages/Projects'))
+const ProjectDetail = lazy(() => import('./pages/ProjectDetail'))
 
 function App() {
   const location = useLocation()
@@ -32,6 +33,7 @@ function App() {
               <Route path="/" element={<Home onContactClick={openContactModal} />} />
               <Route path="/about" element={<About onContactClick={openContactModal} />} />
               <Route path="/projects" element={<Projects />} />
+              <Route path="/project/:slug" element={<ProjectDetail />} />
             </Routes>
           </Suspense>
         </AnimatePresence>
