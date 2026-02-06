@@ -18,14 +18,14 @@ function App() {
   const openContactModal = () => setIsContactModalOpen(true)
   const closeContactModal = () => setIsContactModalOpen(false)
 
-  // Check if we're on the home page
-  const isHomePage = location.pathname === '/'
+  // Check if we're on a full-viewport page (no scroll)
+  const isFullViewportPage = location.pathname === '/'
 
   return (
-    <div className={isHomePage ? 'h-screen overflow-hidden' : 'min-h-screen flex flex-col'}>
+    <div className={isFullViewportPage ? 'h-screen overflow-hidden flex flex-col' : 'min-h-screen flex flex-col'}>
       <Navigation onContactClick={openContactModal} />
       
-      <main className={isHomePage ? '' : 'flex-grow'}>
+      <main className="flex-1">
         <AnimatePresence mode="wait">
           <Suspense fallback={<LoadingSpinner />}>
             <Routes location={location} key={location.pathname}>
@@ -37,8 +37,8 @@ function App() {
         </AnimatePresence>
       </main>
 
-      {/* Only show main Footer on non-home pages */}
-      {!isHomePage && <Footer />}
+      {/* Footer on all pages */}
+      <Footer />
       
       <ContactModal isOpen={isContactModalOpen} onClose={closeContactModal} />
     </div>

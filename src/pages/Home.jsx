@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { HiArrowRight } from 'react-icons/hi'
-import { FaInstagram, FaLinkedinIn, FaBehance, FaDribbble } from 'react-icons/fa'
 import { getFeaturedProjects } from '../data/projects'
 
 const pageVariants = {
@@ -75,14 +74,6 @@ const HomeProjectCard = ({ project, index, number }) => {
 
 const Home = ({ onContactClick }) => {
   const featuredProjects = getFeaturedProjects().slice(0, 3)
-  const currentYear = new Date().getFullYear()
-
-  const socialLinks = [
-    { icon: FaInstagram, href: 'https://instagram.com/i_ndahirwas_s', label: 'Instagram' },
-    { icon: FaLinkedinIn, href: 'https://linkedin.com/in/rylan-phillips', label: 'LinkedIn' },
-    { icon: FaBehance, href: 'https://behance.net', label: 'Behance' },
-    { icon: FaDribbble, href: 'https://dribbble.com', label: 'Dribbble' },
-  ]
 
   return (
     <motion.div
@@ -90,7 +81,7 @@ const Home = ({ onContactClick }) => {
       initial="initial"
       animate="animate"
       exit="exit"
-      className="h-screen bg-dark overflow-hidden flex flex-col"
+      className="flex-1 bg-dark flex flex-col"
     >
       {/* Main Content Area */}
       <main className="flex-1 pt-20 px-10 lg:px-16">
@@ -185,34 +176,6 @@ const Home = ({ onContactClick }) => {
           </div>
         </div>
       </main>
-
-      {/* Minimal Footer */}
-      <footer className="px-10 lg:px-16 py-6">
-        <div className="max-w-[1400px] mx-auto flex items-center justify-between">
-          {/* Social Links */}
-          <div className="flex items-center gap-4">
-            {socialLinks.map((social) => (
-              <motion.a
-                key={social.label}
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-light-200/50 hover:text-primary transition-colors"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                aria-label={social.label}
-              >
-                <social.icon size={18} />
-              </motion.a>
-            ))}
-          </div>
-
-          {/* Copyright */}
-          <p className="text-light-200/40 text-xs font-nav">
-            © {currentYear} INEZA Ndahirwa Sosthene. All rights reserved.
-          </p>
-        </div>
-      </footer>
     </motion.div>
   )
 }
