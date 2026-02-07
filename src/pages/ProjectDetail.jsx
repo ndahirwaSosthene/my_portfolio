@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { HiExternalLink } from 'react-icons/hi'
 import { getProjectBySlug, getNextProject } from '../data/projects'
+import { ScrambleLink } from '../components/ui/ScrambleLink'
 
 const pageVariants = {
   initial: { opacity: 0 },
@@ -30,7 +31,7 @@ const ProjectDetail = () => {
         <div className="text-center">
           <h1 className="text-4xl font-display text-white mb-4">Project not found</h1>
           <Link to="/projects" className="text-primary hover:underline">
-            Back to projects
+            <ScrambleLink>Back to projects</ScrambleLink>
           </Link>
         </div>
       </div>
@@ -107,7 +108,7 @@ const ProjectDetail = () => {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-stone-100 text-xs font-mono uppercase leading-3 tracking-tight hover:text-primary transition-colors"
                 >
-                  <span>{project.liveSite}</span>
+                  <ScrambleLink>{project.liveSite}</ScrambleLink>
                   <HiExternalLink className="w-2 h-2" />
                 </a>
               </MetadataRow>

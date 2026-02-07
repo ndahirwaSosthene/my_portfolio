@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { HiArrowRight } from 'react-icons/hi'
 import { getFeaturedProjects } from '../data/projects'
+import { ScrambleLink } from '../components/ui/ScrambleLink'
 
 const pageVariants = {
   initial: { opacity: 0 },
@@ -126,7 +127,7 @@ const Home = ({ onContactClick }) => {
                   to="/about" 
                   className="text-light-100 font-nav text-sm hover:text-primary transition-colors flex items-center gap-2 group"
                 >
-                  More about me
+                  <ScrambleLink>More about me</ScrambleLink>
                   <HiArrowRight className="transform group-hover:translate-x-1 transition-transform" />
                 </Link>
                 
@@ -134,7 +135,7 @@ const Home = ({ onContactClick }) => {
                   onClick={onContactClick}
                   className="text-light-100 font-nav text-sm hover:text-primary transition-colors flex items-center gap-2 group"
                 >
-                  Let's talk
+                  <ScrambleLink>Let's talk</ScrambleLink>
                   <HiArrowRight className="transform group-hover:translate-x-1 transition-transform" />
                 </button>
               </motion.div>
@@ -156,7 +157,7 @@ const Home = ({ onContactClick }) => {
                   to="/projects" 
                   className="text-light-200/60 hover:text-primary transition-colors text-sm font-nav flex items-center gap-1"
                 >
-                  See all projects
+                  <ScrambleLink>See all projects</ScrambleLink>
                   <span className="text-xs">↗</span>
                 </Link>
               </motion.div>

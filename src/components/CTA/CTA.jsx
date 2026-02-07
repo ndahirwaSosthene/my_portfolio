@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { HiArrowRight } from 'react-icons/hi'
+import { ScrambleLink } from '../ui/ScrambleLink'
 
 const CTA = ({ onContactClick }) => {
   return (
@@ -64,7 +65,7 @@ const CTA = ({ onContactClick }) => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              FILL OUT FORM
+              <ScrambleLink>FILL OUT FORM</ScrambleLink>
               <HiArrowRight className="transform group-hover:translate-x-1 transition-transform" />
             </motion.button>
 
@@ -74,7 +75,7 @@ const CTA = ({ onContactClick }) => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              CONTACTS
+              <ScrambleLink>CONTACTS</ScrambleLink>
             </motion.a>
           </motion.div>
         </motion.div>

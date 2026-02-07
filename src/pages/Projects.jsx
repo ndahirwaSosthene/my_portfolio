@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { HiArrowRight } from 'react-icons/hi'
 import projects from '../data/projects'
+import { ScrambleLink } from '../components/ui/ScrambleLink'
 
 const pageVariants = {
   initial: { opacity: 0 },
@@ -101,14 +102,14 @@ const Projects = ({ onContactClick }) => {
               onClick={onContactClick}
               className="text-stone-100 text-xs font-mono uppercase tracking-wide hover:text-primary transition-colors"
             >
-              Contacts
+              <ScrambleLink>Contacts</ScrambleLink>
             </button>
             <span className="text-stone-100 text-xs font-mono uppercase">or</span>
             <button 
               onClick={onContactClick}
               className="text-stone-100 text-xs font-mono uppercase tracking-wide hover:text-primary transition-colors"
             >
-              Fill out form
+              <ScrambleLink>Fill out form</ScrambleLink>
             </button>
           </motion.div>
         </div>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { HiMenuAlt4, HiX } from 'react-icons/hi'
+import { RandomLetterSwapPingPong } from '../ui/RandomLetterSwap'
 
 const Navigation = ({ onContactClick }) => {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -62,9 +63,14 @@ const Navigation = ({ onContactClick }) => {
             {/* Get in touch - Center */}
             <button
               onClick={onContactClick}
-              className="hidden md:block text-light-100 hover:text-primary transition-colors font-nav font-medium text-sm"
+              className="hidden md:block font-nav font-medium text-sm"
             >
-              Get in touch
+              <RandomLetterSwapPingPong
+                label="Get in touch"
+                primaryClassName="text-light-100"
+                secondaryClassName="text-primary"
+                staggerDuration={0.015}
+              />
             </button>
 
             {/* Desktop Navigation - Right */}
@@ -75,15 +81,15 @@ const Navigation = ({ onContactClick }) => {
                   to={link.path}
                   className="relative group py-2"
                 >
+                  <RandomLetterSwapPingPong
+                    label={link.name}
+                    className="font-nav font-medium text-sm"
+                    primaryClassName={isActive(link.path) ? 'text-light-100' : 'text-light-100/70'}
+                    secondaryClassName="text-primary"
+                    staggerDuration={0.015}
+                  />
                   <span
-                    className={`font-nav font-medium text-sm transition-colors ${
-                      isActive(link.path) ? 'text-light-100' : 'text-light-100/70 hover:text-light-100'
-                    }`}
-                  >
-                    {link.name}
-                  </span>
-                  <span
-                    className={`absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300 ${
+                    className={`absolute bottom-0 left-0 h-0.5 bg-light-100 transition-all duration-300 ${
                       isActive(link.path) ? 'w-full' : 'w-0 group-hover:w-full'
                     }`}
                   />
@@ -136,13 +142,17 @@ const Navigation = ({ onContactClick }) => {
                   >
                     <Link
                       to={link.path}
-                      className={`text-5xl sm:text-6xl font-display font-bold transition-colors ${
-                        isActive(link.path) ? 'text-light-100' : 'text-light-100/70 hover:text-light-100'
-                      }`}
+                      className="block"
                     >
-                      {link.name}
+                      <RandomLetterSwapPingPong
+                        label={link.name}
+                        className="text-5xl sm:text-6xl font-display font-bold"
+                        primaryClassName={isActive(link.path) ? 'text-light-100' : 'text-light-100/70'}
+                        secondaryClassName="text-primary"
+                        staggerDuration={0.02}
+                      />
                       {isActive(link.path) && (
-                        <span className="block h-1 bg-primary mt-2 w-20" />
+                        <span className="block h-1 bg-light-100 mt-2 w-20" />
                       )}
                     </Link>
                   </motion.div>
@@ -158,9 +168,14 @@ const Navigation = ({ onContactClick }) => {
                       setIsMobileMenuOpen(false)
                       onContactClick()
                     }}
-                    className="text-3xl sm:text-4xl font-display text-primary hover:text-primary-400 transition-colors"
+                    className="text-3xl sm:text-4xl font-display"
                   >
-                    Get in touch →
+                    <RandomLetterSwapPingPong
+                      label="Get in touch →"
+                      primaryClassName="text-primary"
+                      secondaryClassName="text-primary-400"
+                      staggerDuration={0.02}
+                    />
                   </button>
                 </motion.div>
               </div>
@@ -170,13 +185,23 @@ const Navigation = ({ onContactClick }) => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="pb-8 flex gap-6 text-light-200"
+                className="pb-8 flex gap-6"
               >
-                <a href="https://instagram.com/i_ndahirwas_s" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
-                  Instagram
+                <a href="https://instagram.com/i_ndahirwas_s" target="_blank" rel="noopener noreferrer">
+                  <RandomLetterSwapPingPong
+                    label="Instagram"
+                    primaryClassName="text-light-200"
+                    secondaryClassName="text-primary"
+                    staggerDuration={0.015}
+                  />
                 </a>
-                <a href="https://linkedin.com/in/rylan-phillips" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
-                  LinkedIn
+                <a href="https://linkedin.com/in/rylan-phillips" target="_blank" rel="noopener noreferrer">
+                  <RandomLetterSwapPingPong
+                    label="LinkedIn"
+                    primaryClassName="text-light-200"
+                    secondaryClassName="text-primary"
+                    staggerDuration={0.015}
+                  />
                 </a>
               </motion.div>
             </div>

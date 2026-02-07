@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { HiOutlineClipboardCopy, HiOutlineExternalLink, HiArrowLeft, HiArrowRight } from 'react-icons/hi'
-import skills from '../data/skills'
+import EnvelopeSkills from '../components/EnvelopeSkills/EnvelopeSkills'
 import experience from '../data/experience'
 import testimonials from '../data/testimonials'
 
@@ -74,53 +74,72 @@ const ContactItem = ({ label, value, href, hasCopy = false }) => {
   )
 }
 
-const SkillCard = ({ skill }) => (
-  <motion.div 
-    className="w-[377px] h-[304px] relative bg-primary/20 overflow-hidden rounded-xl"
-    whileHover={{ scale: 1.02 }}
-  >
-    <div className="absolute left-7 top-9">
-      <h3 className="text-black text-[32px] font-display font-bold">{skill.name}</h3>
-    </div>
-    <p className="w-[316px] absolute left-7 top-[90px] text-black text-xl font-display">
-      {skill.description}
-    </p>
-    <div className="absolute left-7 top-[182px] flex flex-col gap-2.5">
-      {skill.tools.slice(0, 1).map((tool) => (
-        <div key={tool} className="flex items-center gap-2.5 px-2.5">
-          <div className="w-1 h-1 bg-black rounded-full" />
-          <span className="text-black text-xl font-display font-medium">{tool}</span>
-        </div>
-      ))}
-      <div className="flex items-center gap-2.5 px-2.5">
-        <div className="w-1 h-1 bg-black rounded-full" />
-        <span className="text-black text-xl font-display font-medium">{skill.experience}</span>
-      </div>
-      <div className="flex items-center gap-2.5 px-2.5">
-        <div className="w-1 h-1 bg-black rounded-full" />
-        <span className="text-black text-xl font-display font-medium">{skill.projectCount} Projects</span>
-      </div>
-    </div>
-    <div className="absolute right-5 bottom-5 flex items-center gap-2">
-      <span className="text-black text-xl font-nav font-medium">Proof</span>
-      <HiOutlineExternalLink className="text-black" size={14} />
-    </div>
-  </motion.div>
-)
-
-const ExperienceItem = ({ exp }) => (
-  <div className="w-full flex flex-col gap-6">
-    <div className="flex items-center justify-between">
+const ExperienceItem = ({ exp, isOpen, onToggle }) => (
+  <div className="w-full flex flex-col gap-6 cursor-pointer" onClick={onToggle}>
+    {/* Header Row - Always visible */}
+    <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
+      {/* Left - Bullet + Position */}
       <div className="flex items-center gap-9">
-        <div className="w-3 h-3 bg-gray-300 rounded-full" />
-        <h3 className="text-white text-4xl lg:text-5xl font-serif italic">{exp.position}</h3>
+        <div className={`${isOpen ? 'w-5 h-5' : 'w-3 h-3'} bg-zinc-300 rounded-full flex-shrink-0 transition-all duration-300`} />
+        <h3 className="text-white text-4xl lg:text-6xl font-normal font-['Playfair_Display'] italic">
+          {exp.position}
+        </h3>
       </div>
-      <div className="flex flex-col items-start">
-        <span className="text-white text-2xl font-display">{exp.company}</span>
-        <span className="text-white text-base font-nav">{exp.location}</span>
+      {/* Right - Company + Location */}
+      <div className="flex flex-col lg:items-start ml-12 lg:ml-0">
+        <span className="text-white text-2xl lg:text-3xl font-normal font-display">
+          {exp.company}
+        </span>
+        <span className="text-white text-base font-normal">
+          {exp.location}
+        </span>
       </div>
     </div>
-    <div className="w-full h-px bg-white/30" />
+    
+    {/* Expanded Content - Accordion */}
+    <motion.div
+      initial={false}
+      animate={{ 
+        height: isOpen ? 'auto' : 0,
+        opacity: isOpen ? 1 : 0
+      }}
+      transition={{ duration: 0.3, ease: 'easeInOut' }}
+      className="overflow-hidden"
+    >
+      <div className="flex flex-col items-end gap-10 pb-4">
+        {/* Assignment & Solution */}
+        <div className="w-full flex flex-col lg:flex-row gap-10 lg:gap-28">
+          {/* Assignment */}
+          <div className="w-full lg:w-96 flex flex-col gap-5">
+            <h4 className="text-white text-2xl font-medium font-display">Assignment</h4>
+            <p className="text-white text-lg font-normal font-display">
+              {exp.assignment}
+            </p>
+          </div>
+          {/* Solution */}
+          <div className="w-full lg:w-80 flex flex-col gap-5">
+            <h4 className="text-white text-xl font-medium font-display">Solution</h4>
+            <p className="text-white text-lg font-normal font-display">
+              {exp.solution}
+            </p>
+          </div>
+        </div>
+        
+        {/* Tags */}
+        <div className="flex flex-wrap justify-end items-center gap-6">
+          {exp.tags?.map((tag, index) => (
+            <div key={index} className="flex items-center gap-6">
+              <span className="text-white text-base font-medium">{tag}</span>
+              {index < exp.tags.length - 1 && (
+                <div className="w-1 h-1 bg-zinc-300 rounded-full" />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+    
+    <div className="w-full h-px bg-white" />
   </div>
 )
 
@@ -137,6 +156,11 @@ const TestimonialCard = ({ testimonial }) => (
 
 const About = ({ onContactClick }) => {
   const [activeStep, setActiveStep] = useState(0)
+  const [openExperienceId, setOpenExperienceId] = useState(null)
+  
+  const toggleExperience = (id) => {
+    setOpenExperienceId(openExperienceId === id ? null : id)
+  }
   
   const contactInfo = [
     { label: 'Email', value: 'ndahirwas@gmail.com', href: 'mailto:ndahirwas@gmail.com', hasCopy: true },
@@ -216,107 +240,50 @@ const About = ({ onContactClick }) => {
         </div>
       </section>
 
-      {/* I CAN DO WONDERS - Intro Section (White) */}
-      <section className="py-24 px-10 lg:px-16 bg-white overflow-hidden">
-        <div className="max-w-[1400px] mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <motion.h2
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="text-5xl lg:text-6xl font-display font-medium text-black mb-6"
-              >
-                I CAN DO WONDERS
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
-                className="text-xl lg:text-2xl font-display font-light text-dark-100"
-              >
-                Crafting exceptional digital experiences through innovative design and 
-                cutting-edge solutions. From concept to completion, I deliver results.
-              </motion.p>
-            </div>
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="h-[400px] bg-gradient-to-br from-primary/30 to-primary/10 rounded-xl"
-            />
-          </div>
-        </div>
-      </section>
+      {/* Skills Section with Envelope Parallax Animation */}
+      <EnvelopeSkills />
 
-      {/* Skills Cards Section (White) */}
-      <section className="py-24 px-10 lg:px-16 bg-white overflow-hidden">
-        <div className="max-w-[1400px] mx-auto">
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-5xl lg:text-6xl font-display font-medium text-black mb-16"
-          >
-            I CAN DO WONDERS
-          </motion.h2>
+      {/* Experience Section (Dark) */}
+      <section className="min-h-[899px] relative bg-black overflow-hidden">
+        <div className="max-w-[1440px] mx-auto h-full flex flex-col lg:flex-row pt-40 px-10 gap-20">
+          {/* Left - Title Column */}
+          <div className="w-full lg:w-96 flex flex-col gap-6 flex-shrink-0">
+            <motion.h2
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-7xl lg:text-8xl font-medium font-display text-stone-100 leading-tight tracking-tight"
+            >
+              Experience
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-xl lg:text-2xl font-normal font-display text-white"
+            >
+              Building exceptional digital experiences across various industries and platforms.
+            </motion.p>
+          </div>
           
-          <div className="flex gap-11 overflow-x-auto pb-6">
-            {skills.slice(0, 3).map((skill, index) => (
+          {/* Right - Experience List */}
+          <div className="flex-1 flex flex-col gap-5">
+            {experience.map((exp, index) => (
               <motion.div
-                key={skill.id}
+                key={exp.id}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
               >
-                <SkillCard skill={skill} />
+                <ExperienceItem 
+                  exp={exp} 
+                  isOpen={openExperienceId === exp.id}
+                  onToggle={() => toggleExperience(exp.id)}
+                />
               </motion.div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Experience Section (Dark) */}
-      <section className="py-24 px-10 lg:px-16 bg-dark overflow-hidden">
-        <div className="max-w-[1400px] mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-            {/* Left - Title */}
-            <div className="lg:col-span-4">
-              <motion.h2
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="text-7xl lg:text-8xl font-display font-medium text-stone-100 mb-6"
-              >
-                Experience
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
-                className="text-2xl font-display text-white"
-              >
-                Building exceptional digital experiences across various industries and platforms.
-              </motion.p>
-            </div>
-            
-            {/* Right - Experience List */}
-            <div className="lg:col-span-8 flex flex-col gap-5">
-              {experience.map((exp, index) => (
-                <motion.div
-                  key={exp.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <ExperienceItem exp={exp} />
-                </motion.div>
-              ))}
-            </div>
           </div>
         </div>
       </section>
