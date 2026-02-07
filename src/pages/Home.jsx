@@ -84,20 +84,20 @@ const Home = ({ onContactClick }) => {
       exit="exit"
       className="flex-1 bg-dark flex flex-col"
     >
-      {/* Main Content Area */}
-      <main className="flex-1 pt-20 px-10 lg:px-16">
+      {/* Main Content Area - positioned to match Figma */}
+      <main className="flex-1 pt-[168px] px-10 lg:px-16">
         <div className="max-w-[1400px] mx-auto h-full flex flex-col">
-          <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
             
             {/* Left Column - Hero Content */}
-            <div className="lg:col-span-5 flex flex-col justify-center">
+            <div className="lg:col-span-5 flex flex-col justify-start">
               {/* Main Headline */}
               <motion.h1
                 custom={0}
                 initial="hidden"
                 animate="visible"
                 variants={textVariants}
-                className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-display font-bold text-light-100 leading-[0.95] mb-6"
+                className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-display font-normal text-light-100 leading-[0.95] mb-7"
               >
                 Digital<br />Architect
               </motion.h1>
@@ -108,7 +108,7 @@ const Home = ({ onContactClick }) => {
                 initial="hidden"
                 animate="visible"
                 variants={textVariants}
-                className="text-light-200/50 text-sm lg:text-base leading-relaxed max-w-md mb-8"
+                className="text-stone-300 text-xl lg:text-2xl font-light leading-relaxed max-w-[500px] mb-7"
               >
                 Crafting exceptional digital experiences through innovative design and 
                 cutting-edge mobile solutions. Turning ideas into pixel-perfect reality 
@@ -125,7 +125,7 @@ const Home = ({ onContactClick }) => {
               >
                 <Link 
                   to="/about" 
-                  className="text-light-100 font-nav text-sm hover:text-primary transition-colors flex items-center gap-2 group"
+                  className="text-light-100 font-medium text-xl hover:text-primary transition-colors flex items-center gap-2 group"
                 >
                   <ScrambleLink>More about me</ScrambleLink>
                   <HiArrowRight className="transform group-hover:translate-x-1 transition-transform" />
@@ -133,7 +133,7 @@ const Home = ({ onContactClick }) => {
                 
                 <button
                   onClick={onContactClick}
-                  className="text-light-100 font-nav text-sm hover:text-primary transition-colors flex items-center gap-2 group"
+                  className="text-light-100 font-medium text-xl hover:text-primary transition-colors flex items-center gap-2 group"
                 >
                   <ScrambleLink>Let's talk</ScrambleLink>
                   <HiArrowRight className="transform group-hover:translate-x-1 transition-transform" />
@@ -142,20 +142,20 @@ const Home = ({ onContactClick }) => {
             </div>
 
             {/* Right Column - Project Gallery */}
-            <div className="lg:col-span-7 flex flex-col items-end gap-6">
-              {/* Section Header */}
+            <div className="lg:col-span-7 flex flex-col items-end gap-8 mt-[43px]">
+              {/* Section Header - "Mobile App Development" at top-211px relative to hero at 168px = 43px offset */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="flex flex-col items-end"
               >
-                <h2 className="text-light-100 font-display font-semibold text-lg lg:text-xl mb-1">
+                <h2 className="text-light-100 font-display font-medium text-2xl lg:text-3xl mb-2">
                   Mobile App Development
                 </h2>
                 <Link 
                   to="/projects" 
-                  className="text-light-200/60 hover:text-primary transition-colors text-sm font-nav flex items-center gap-1"
+                  className="text-light-200/60 hover:text-primary transition-colors text-xl font-medium flex items-center gap-1"
                 >
                   <ScrambleLink>See all projects</ScrambleLink>
                   <span className="text-xs">↗</span>
