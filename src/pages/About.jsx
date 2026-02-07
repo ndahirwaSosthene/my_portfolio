@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion'
 import { useState } from 'react'
-import { HiOutlineClipboardCopy, HiOutlineExternalLink, HiArrowLeft, HiArrowRight } from 'react-icons/hi'
+import { HiOutlineClipboardCopy, HiOutlineExternalLink } from 'react-icons/hi'
 import EnvelopeSkills from '../components/EnvelopeSkills/EnvelopeSkills'
+import { Timeline } from '../components/ui/Timeline'
 import experience from '../data/experience'
-import testimonials from '../data/testimonials'
 
 const pageVariants = {
   initial: { opacity: 0 },
@@ -143,19 +143,7 @@ const ExperienceItem = ({ exp, isOpen, onToggle }) => (
   </div>
 )
 
-const TestimonialCard = ({ testimonial }) => (
-  <div className="w-[366px] h-[418px] bg-[#242323] rounded-2xl p-8 flex-shrink-0">
-    <h3 className="text-white text-3xl font-medium mb-20">{testimonial.client}</h3>
-    <p className="text-white text-lg leading-relaxed mb-auto">{testimonial.quote}</p>
-    <div className="mt-12">
-      <p className="text-white text-sm">{testimonial.name}</p>
-      <p className="text-white/60 text-xs">{testimonial.position}</p>
-    </div>
-  </div>
-)
-
 const About = ({ onContactClick }) => {
-  const [activeStep, setActiveStep] = useState(0)
   const [openExperienceId, setOpenExperienceId] = useState(null)
   
   const toggleExperience = (id) => {
@@ -288,108 +276,20 @@ const About = ({ onContactClick }) => {
         </div>
       </section>
 
-      {/* How I Work Section (Dark) */}
-      <section className="py-24 px-10 lg:px-16 bg-dark overflow-hidden">
-        <div className="max-w-[1400px] mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Left Side */}
-            <div className="relative">
-              <motion.h2
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="text-7xl lg:text-8xl font-display font-medium text-white mb-6"
-              >
-                How I work
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
-                className="text-2xl font-display text-white mb-12"
-              >
-                A structured approach to delivering exceptional results.
-              </motion.p>
-              
-              {/* Large Background Number */}
-              <div className="text-[270px] font-bold text-white/20 leading-none">
-                {workProcess[activeStep].step}
-              </div>
-            </div>
-            
-            {/* Right Side - Steps */}
-            <div className="relative">
-              {/* Vertical Line */}
-              <div className="absolute left-3 top-0 bottom-0 w-px bg-white/30" />
-              
-              <div className="flex flex-col gap-4 pl-12">
-                {workProcess.map((item, index) => (
-                  <motion.div
-                    key={item.step}
-                    initial={{ opacity: 0, x: 30 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                    className="relative cursor-pointer"
-                    onClick={() => setActiveStep(index)}
-                  >
-                    {/* Dot */}
-                    <div className={`absolute -left-12 top-2 rounded-full transition-all ${
-                      activeStep === index ? 'w-6 h-6 bg-white -ml-1.5' : 'w-2.5 h-2.5 bg-white'
-                    }`} />
-                    
-                    <h3 className={`text-3xl font-display font-medium mb-2 transition-colors ${
-                      activeStep === index ? 'text-primary' : 'text-white'
-                    }`}>
-                      {item.title}
-                    </h3>
-                    
-                    {activeStep === index && (
-                      <motion.p
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        className="text-2xl font-display text-white max-w-[520px]"
-                      >
-                        {item.description}
-                      </motion.p>
-                    )}
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Section (Dark) */}
-      <section className="py-24 px-10 lg:px-16 bg-dark overflow-hidden">
-        <div className="max-w-[1400px] mx-auto">
-          {/* Navigation Arrows */}
-          <div className="flex items-center gap-8 mb-16">
-            <button className="w-[74px] h-[74px] rounded-full border border-white flex items-center justify-center hover:bg-white/10 transition-colors">
-              <HiArrowLeft className="text-white" size={24} />
-            </button>
-            <button className="w-[74px] h-[74px] rounded-full border border-white flex items-center justify-center hover:bg-white/10 transition-colors">
-              <HiArrowRight className="text-white" size={24} />
-            </button>
-          </div>
-          
-          {/* Testimonial Cards */}
-          <div className="flex gap-4 overflow-x-auto pb-6">
-            {testimonials.map((testimonial, index) => (
-              <motion.div
-                key={testimonial.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <TestimonialCard testimonial={testimonial} />
-              </motion.div>
-            ))}
-          </div>
-        </div>
+      {/* How I Work Section (Dark) - Timeline */}
+      <section className="bg-dark overflow-hidden">
+        <Timeline 
+          title="How I work"
+          subtitle="A structured approach to delivering exceptional results."
+          data={workProcess.map((item) => ({
+            title: item.step + '. ' + item.title,
+            content: (
+              <p className="text-white/70 text-base md:text-lg font-display leading-relaxed">
+                {item.description}
+              </p>
+            )
+          }))}
+        />
       </section>
 
       {/* CTA Section (Dark) */}

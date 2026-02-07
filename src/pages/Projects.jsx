@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { HiArrowRight } from 'react-icons/hi'
+import { HiArrowRight, HiExternalLink } from 'react-icons/hi'
 import projects from '../data/projects'
 import { ScrambleLink } from '../components/ui/ScrambleLink'
 
@@ -11,34 +11,73 @@ const pageVariants = {
 }
 
 const ProjectCard = ({ project, index }) => {
+  const handleExternalClick = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    window.open(project.liveSiteUrl, '_blank', 'noopener,noreferrer')
+  }
+
   return (
-    <Link to={`/project/${project.slug}`}>
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: index * 0.1 }}
-        className={`w-96 h-80 relative ${project.color} rounded-2xl overflow-hidden group cursor-pointer`}
-      >
-        {/* Image placeholder - centered */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-72 h-56 bg-white/10 rounded-lg flex items-center justify-center">
-            <span className="text-white/30 text-6xl font-display font-bold">
-              {project.title.charAt(0)}
-            </span>
-          </div>
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.1 }}
+      className="w-96 p-2 bg-dark-50 rounded-lg border border-dark-100 inline-flex flex-col justify-start items-start"
+    >
+      {/* Browser Chrome */}
+      <div className="w-full pb-2 inline-flex justify-between items-center">
+        {/* Window Controls - Three dots */}
+        <div className="w-12 flex justify-start items-center gap-2">
+          <div className="w-2 h-2 bg-dark-100 rounded-full" />
+          <div className="w-2 h-2 bg-dark-100 rounded-full" />
+          <div className="w-2 h-2 bg-dark-100 rounded-full" />
         </div>
         
-        {/* Title row at bottom */}
-        <div className="absolute left-7 right-7 bottom-5 flex justify-between items-center">
-          <h3 className="text-white text-xl font-medium font-['Poppins']">
-            {project.title}
-          </h3>
-          <div className="w-5 h-5 border-2 border-white rounded-sm flex items-center justify-center group-hover:bg-white transition-colors">
-            <HiArrowRight className="text-white group-hover:text-black w-3 h-3 -rotate-45" />
+        {/* URL Bar */}
+        <div className="flex-1 h-8 px-4 py-2 mx-2 bg-dark rounded border border-dark-100 flex justify-center items-center">
+          <span className="text-center text-light-200/70 text-sm font-normal truncate max-w-[200px]">
+            {project.liveSite || `${project.slug}.com`}/
+          </span>
+        </div>
+        
+        {/* External Link Icon */}
+        <button 
+          onClick={handleExternalClick}
+          className="w-12 flex justify-end items-center group"
+          title="Open live site"
+        >
+          <div className="w-6 h-6 border border-dark-100 rounded flex items-center justify-center hover:border-primary hover:bg-primary/10 transition-colors">
+            <HiExternalLink className="w-3.5 h-3.5 text-light-200/50 group-hover:text-primary transition-colors" />
+          </div>
+        </button>
+      </div>
+      
+      {/* Project Image - Clickable to project detail */}
+      <Link to={`/project/${project.slug}`} className="w-full block group">
+        <div className="w-full rounded border border-white/5 overflow-hidden">
+          <div className={`w-full aspect-square ${project.color} flex items-center justify-center relative`}>
+            {project.thumbnail ? (
+              <img
+                src={project.thumbnail}
+                alt={project.title}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                loading="lazy"
+              />
+            ) : (
+              <span className="text-white/20 text-8xl font-display font-bold group-hover:scale-110 transition-transform duration-300">
+                {project.title.charAt(0)}
+              </span>
+            )}
+            
+            {/* Hover overlay with title */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+              <h3 className="text-white text-xl font-medium">{project.title}</h3>
+              <p className="text-white/60 text-sm mt-1">{project.tags?.slice(0, 2).join(' • ')}</p>
+            </div>
           </div>
         </div>
-      </motion.div>
-    </Link>
+      </Link>
+    </motion.div>
   )
 }
 

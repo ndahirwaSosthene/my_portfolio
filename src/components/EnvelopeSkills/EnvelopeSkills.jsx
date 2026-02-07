@@ -5,8 +5,133 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { HiOutlineExternalLink } from 'react-icons/hi'
 import skills from '../../data/skills'
 
-// Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger)
+
+// =============================================================================
+// ENVELOPE 3D STRUCTURE - CSS-IN-JS STYLES
+// =============================================================================
+// 
+// The envelope is built from four DOM layers that create a mechanical 3D object:
+// 
+//   1. env-back   - The rear panel (visible when flap is open)
+//   2. env-pocket - The inner pocket where cards live (translateZ negative)
+//   3. env-front  - The front face with the opening
+//   4. env-flap   - The triangular flap that rotates open on a hinge
+//
+// Z-ordering (back to front): back → pocket → cards → front → flap
+// =============================================================================
+
+const envelopeStyles = {
+  // Container for the entire envelope - establishes 3D context
+  wrapper: {
+    width: '500px',
+    height: '340px',
+    transformStyle: 'preserve-3d',
+    willChange: 'transform',
+  },
+  // Back panel - visible through the opening when flap is up
+  back: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    background: 'linear-gradient(135deg, #e8dfd5 0%, #d4c8b8 100%)',
+    borderRadius: '12px',
+    transform: 'translateZ(-2px)',
+    boxShadow: 'inset 0 0 30px rgba(0,0,0,0.05)',
+  },
+  // Inner pocket - cards sit here, pushed back in Z
+  pocket: {
+    position: 'absolute',
+    width: '92%',
+    height: '85%',
+    left: '4%',
+    top: '10%',
+    background: 'linear-gradient(180deg, #f5f0e8 0%, #ede5d8 100%)',
+    borderRadius: '8px',
+    transform: 'translateZ(-1px)',
+    boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.08)',
+  },
+  // Front face - the main visible body with cutout visual
+  front: {
+    position: 'absolute',
+    width: '100%',
+    height: '65%',
+    bottom: '0',
+    background: 'linear-gradient(180deg, #c9b99a 0%, #b8a888 50%, #a89878 100%)',
+    borderRadius: '0 0 12px 12px',
+    transform: 'translateZ(1px)',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.3)',
+    // Subtle paper texture effect
+    backgroundImage: `
+      linear-gradient(180deg, #c9b99a 0%, #b8a888 50%, #a89878 100%),
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 2px,
+        rgba(255,255,255,0.02) 2px,
+        rgba(255,255,255,0.02) 4px
+      )
+    `,
+  },
+  // Flap - rotates on a hinge at the top edge
+  flap: {
+    position: 'absolute',
+    width: '100%',
+    height: '45%',
+    top: '0',
+    transformOrigin: 'top center', // Hinge point
+    transformStyle: 'preserve-3d',
+    transform: 'translateZ(2px) rotateX(0deg)',
+    willChange: 'transform',
+  },
+  // Flap front face (visible when closed)
+  flapFront: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    background: 'linear-gradient(180deg, #d4c4a8 0%, #c4b498 100%)',
+    clipPath: 'polygon(50% 100%, 0% 0%, 100% 0%)',
+    backfaceVisibility: 'hidden',
+    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+  },
+  // Flap back face (visible when open)
+  flapBack: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    background: 'linear-gradient(180deg, #e8dfd5 0%, #ddd4c8 100%)',
+    clipPath: 'polygon(50% 100%, 0% 0%, 100% 0%)',
+    transform: 'rotateY(180deg)',
+    backfaceVisibility: 'hidden',
+  },
+  // Decorative seal on the flap
+  seal: {
+    position: 'absolute',
+    width: '60px',
+    height: '60px',
+    left: '50%',
+    bottom: '20px',
+    transform: 'translateX(-50%)',
+    background: 'radial-gradient(circle, #8b4513 0%, #654321 100%)',
+    borderRadius: '50%',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.3), inset 0 -2px 4px rgba(0,0,0,0.2)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1,
+  },
+  sealInner: {
+    width: '40px',
+    height: '40px',
+    background: 'radial-gradient(circle, #a0522d 0%, #8b4513 100%)',
+    borderRadius: '50%',
+    boxShadow: 'inset 0 2px 4px rgba(255,255,255,0.2)',
+  },
+}
+
+// =============================================================================
+// SKILL CARD COMPONENT
+// =============================================================================
 
 const SkillCard = ({ skill, index }) => {
   const navigate = useNavigate()
@@ -15,7 +140,7 @@ const SkillCard = ({ skill, index }) => {
     e.preventDefault()
     e.stopPropagation()
     
-    // Navigate to projects page with filter
+    // Fade out scene before navigating
     gsap.to('.envelope-scene', {
       opacity: 0,
       scale: 0.98,
@@ -29,8 +154,16 @@ const SkillCard = ({ skill, index }) => {
 
   return (
     <article 
-      className="skill-card w-[377px] h-[304px] flex-shrink-0 relative bg-primary/20 rounded-xl overflow-hidden"
+      className="skill-card flex-shrink-0 relative rounded-xl overflow-hidden"
       data-index={index}
+      style={{
+        width: '377px',
+        height: '304px',
+        background: 'linear-gradient(145deg, #fff8f0 0%, #ffe4c4 100%)',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08)',
+        // Cards start inside the envelope pocket
+        transformStyle: 'preserve-3d',
+      }}
     >
       <div className="absolute left-7 top-9">
         <h3 className="text-black text-[32px] font-display font-bold">{skill.name}</h3>
@@ -63,112 +196,141 @@ const SkillCard = ({ skill, index }) => {
   )
 }
 
+// =============================================================================
+// MAIN COMPONENT - MECHANICAL ENVELOPE ANIMATION
+// =============================================================================
+
 const EnvelopeSkills = () => {
   const sceneRef = useRef(null)
   const stickyRef = useRef(null)
   const envelopeRef = useRef(null)
+  const flapRef = useRef(null)
   const subtitleRef = useRef(null)
   const cardsTrackRef = useRef(null)
   const cardsContainerRef = useRef(null)
   
   useEffect(() => {
-    // Check for reduced motion preference
+    // Respect reduced motion preference
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       return
     }
 
     const scene = sceneRef.current
     const envelope = envelopeRef.current
+    const flap = flapRef.current
     const subtitle = subtitleRef.current
     const cardsTrack = cardsTrackRef.current
     const cardsContainer = cardsContainerRef.current
     const cards = gsap.utils.toArray('.skill-card')
     const proofBtns = gsap.utils.toArray('.proof-btn')
-    const envelopeClosed = envelope?.querySelector('.envelope-closed')
-    const envelopeOpen = envelope?.querySelector('.envelope-open')
 
-    if (!scene || !envelope || !cardsTrack || !cardsContainer) return
+    if (!scene || !envelope || !flap || !cardsTrack || !cardsContainer) return
 
-    // Create master timeline
+    // =========================================================================
+    // GSAP TIMELINE - SCROLL-DRIVEN MECHANICAL ANIMATION
+    // =========================================================================
+    //
+    // Timeline phases (mapped to scroll progress 0 → 1):
+    //
+    //   0.00 - 0.15  Idle: Text visible, envelope closed on right
+    //   0.15 - 0.25  Transition: Text fades out, envelope moves to center
+    //   0.25 - 0.40  Flap opens: Mechanical hinge rotation (rotateX)
+    //   0.40 - 0.55  Cards emerge: Translate up/out from pocket with stagger
+    //   0.55 - 0.80  Browse: Cards scroll horizontally
+    //   0.80 - 0.95  Exit: Cards translate out, envelope closes
+    //   0.95 - 1.00  Reset: Ready for next section
+    //
+    // All animations use ease: 'none' for linear scrubbing.
+    // Scrolling backward reverses everything automatically.
+    // =========================================================================
+
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: scene,
         start: 'top top',
         end: 'bottom bottom',
         scrub: 1,
-        // markers: true, // Uncomment for debugging
+        // markers: true, // Debug
       }
     })
 
-    // Phase 1: Text visible on left, closed envelope on right (0 - 0.15)
-    // Initial state is already set in JSX
+    // --- Phase 1: Idle state (0.00 - 0.15) ---
+    // Initial state set in JSX; nothing animates yet
 
-    // Phase 2: Text fades out, envelope transitions to open (0.15 - 0.35)
+    // --- Phase 2: Text fades, envelope centers (0.15 - 0.25) ---
     tl.to(subtitle, {
       opacity: 0,
-      x: -100,
-      duration: 0.20,
+      x: -80,
+      duration: 0.10,
       ease: 'none'
     }, 0.15)
 
-    // Swap closed to open envelope
-    if (envelopeClosed && envelopeOpen) {
-      tl.to(envelopeClosed, {
-        opacity: 0,
-        duration: 0.10,
-        ease: 'none'
-      }, 0.25)
-
-      tl.to(envelopeOpen, {
-        opacity: 1,
-        duration: 0.10,
-        ease: 'none'
-      }, 0.25)
-    }
-
-    // Move envelope to center and scale up slightly (0.30 - 0.45)
     tl.to(envelope, {
-      x: -200,
-      scale: 1.1,
+      x: -280,
+      y: 50,
+      scale: 1.15,
+      rotateY: -5, // Slight 3D turn for depth
+      duration: 0.15,
+      ease: 'none'
+    }, 0.15)
+
+    // --- Phase 3: Flap opens mechanically (0.25 - 0.40) ---
+    // The flap rotates on its top edge (transform-origin: top center)
+    // rotateX goes from 0 → -160 degrees (opens past vertical)
+    tl.to(flap, {
+      rotateX: -160,
+      duration: 0.15,
+      ease: 'none'
+    }, 0.25)
+
+    // Envelope tilts slightly as if being held open
+    tl.to(envelope, {
+      rotateX: 15,
+      rotateY: 0,
       duration: 0.15,
       ease: 'none'
     }, 0.30)
 
-    // Show cards container (0.40)
+    // --- Phase 4: Cards emerge from pocket (0.40 - 0.55) ---
+    // Cards translate from inside the envelope (negative Y, pushed back in Z)
+    // to their browsing position (Y: 0, Z: forward)
+    tl.fromTo(cards, 
+      { 
+        y: 200,           // Start below (inside envelope)
+        z: -50,           // Pushed back into pocket
+        rotateX: -20,     // Tilted as if lying in envelope
+        opacity: 0,
+      },
+      {
+        y: 0,
+        z: 0,
+        rotateX: 0,
+        opacity: 1,
+        stagger: 0.02,    // Cards emerge in sequence
+        duration: 0.12,
+        ease: 'none'
+      },
+      0.40
+    )
+
+    // Cards container becomes visible
     tl.to(cardsContainer, {
       opacity: 1,
       duration: 0.05,
       ease: 'none'
     }, 0.40)
 
-    // Phase 3: Cards emerge from envelope (0.45 - 0.60)
-    tl.fromTo(cards, 
-      { 
-        y: 150, 
-        opacity: 0,
-        scale: 0.8
-      },
-      {
-        y: 0,
-        opacity: 1,
-        scale: 1,
-        stagger: 0.03,
-        duration: 0.15,
-        ease: 'none'
-      },
-      0.45
-    )
-
-    // Fade out envelope as cards appear
+    // Envelope drops back and fades as cards take over
     tl.to(envelope, {
+      y: 150,
+      scale: 0.8,
       opacity: 0,
-      scale: 0.6,
-      y: 100,
+      rotateX: 30,
       duration: 0.15,
       ease: 'none'
     }, 0.50)
 
-    // Phase 4: Horizontal card browsing (0.60 - 0.85)
+    // --- Phase 5: Horizontal card browsing (0.55 - 0.80) ---
     const trackWidth = cardsTrack.scrollWidth
     const viewportWidth = window.innerWidth
     const scrollDistance = Math.max(0, trackWidth - viewportWidth + 200)
@@ -177,37 +339,76 @@ const EnvelopeSkills = () => {
       x: -scrollDistance,
       duration: 0.25,
       ease: 'none'
-    }, 0.60)
+    }, 0.55)
 
-    // Phase 5: Cards fade out, prepare for next section (0.85 - 1.00)
-    tl.to(cardsContainer, {
-      y: -80,
+    // --- Phase 6: Cards exit, envelope returns (0.80 - 0.95) ---
+    // Cards slide up and out
+    tl.to(cards, {
+      y: -100,
       opacity: 0,
-      duration: 0.15,
+      stagger: 0.01,
+      duration: 0.10,
       ease: 'none'
-    }, 0.85)
+    }, 0.82)
 
-    // Interaction window control
+    tl.to(cardsContainer, {
+      opacity: 0,
+      duration: 0.05,
+      ease: 'none'
+    }, 0.90)
+
+    // Envelope fades back in and closes (for scroll-back continuity)
+    tl.to(envelope, {
+      y: 50,
+      scale: 1.15,
+      opacity: 1,
+      rotateX: 15,
+      duration: 0.08,
+      ease: 'none'
+    }, 0.88)
+
+    // Flap closes
+    tl.to(flap, {
+      rotateX: 0,
+      duration: 0.08,
+      ease: 'none'
+    }, 0.92)
+
+    // Envelope returns to start position
+    tl.to(envelope, {
+      x: 0,
+      y: 0,
+      scale: 1,
+      rotateX: 0,
+      rotateY: 0,
+      duration: 0.05,
+      ease: 'none'
+    }, 0.95)
+
+    // =========================================================================
+    // INTERACTION WINDOW CONTROL
+    // =========================================================================
+    // Cards are only interactable during the browsing phase (0.55 - 0.85)
+    // This prevents accidental clicks during transitions
+
     ScrollTrigger.create({
       trigger: scene,
       start: 'top top',
       end: 'bottom bottom',
       onUpdate: (self) => {
-        const active = self.progress > 0.55 && self.progress < 0.90
+        const progress = self.progress
+        const cardsActive = progress > 0.50 && progress < 0.85
 
         cards.forEach(card => {
-          card.style.pointerEvents = active ? 'auto' : 'none'
+          card.style.pointerEvents = cardsActive ? 'auto' : 'none'
         })
         proofBtns.forEach(btn => {
-          btn.style.pointerEvents = active ? 'auto' : 'none'
+          btn.style.pointerEvents = cardsActive ? 'auto' : 'none'
         })
-        if (envelope) {
-          envelope.style.pointerEvents = active ? 'none' : 'auto'
-        }
       }
     })
 
-    // Cleanup
+    // Cleanup on unmount
     return () => {
       ScrollTrigger.getAll().forEach(trigger => trigger.kill())
     }
@@ -219,15 +420,17 @@ const EnvelopeSkills = () => {
       className="envelope-scene relative bg-white"
       style={{ height: '500vh' }}
     >
-      {/* Sticky wrapper */}
+      {/* Sticky viewport - everything stays fixed as user scrolls */}
       <div 
         ref={stickyRef}
         className="sticky top-0 h-screen w-full overflow-hidden"
         style={{ perspective: '1200px' }}
       >
-        {/* Phase 1: Two-column layout matching design */}
         <div className="w-full h-full relative">
-          {/* Left Side - Title and Description */}
+          
+          {/* ================================================================
+              LEFT SIDE - TITLE AND DESCRIPTION
+              ================================================================ */}
           <div 
             ref={subtitleRef}
             className="absolute left-[50px] top-[154px] w-[515px] flex flex-col gap-5 z-10"
@@ -241,42 +444,78 @@ const EnvelopeSkills = () => {
             </p>
           </div>
 
-          {/* Right Side - Envelope */}
+          {/* ================================================================
+              RIGHT SIDE - MECHANICAL 3D ENVELOPE
+              ================================================================
+              
+              Structure:
+              - envelope (container with preserve-3d)
+                - env-back (rear panel, z: -2)
+                - env-pocket (where cards live, z: -1)
+                - env-front (main body, z: 1)
+                - env-flap (hinged lid, z: 2)
+                  - flap-front (visible when closed)
+                  - flap-back (visible when open)
+                  - seal (decorative)
+              
+              The flap rotates on its TOP EDGE, opening like a real envelope.
+              ================================================================ */}
           <div 
             ref={envelopeRef}
-            className="envelope absolute right-[80px] top-[62px]"
-            style={{ 
-              transformStyle: 'preserve-3d',
-              willChange: 'transform',
-              width: '666px',
-              height: '404px'
-            }}
+            className="envelope absolute right-[80px] top-[100px]"
+            style={envelopeStyles.wrapper}
           >
-            {/* Closed envelope image */}
-            <img 
-              src="/assets/envelope/best_cover.png" 
-              alt="Envelope closed" 
-              className="envelope-closed w-full h-full object-contain"
-            />
+            {/* Back panel - visible through opening */}
+            <div className="env-back" style={envelopeStyles.back} />
             
-            {/* Open envelope image (initially hidden, shown during animation) */}
-            <img 
-              src="/assets/envelope/open_best.png" 
-              alt="Envelope open" 
-              className="envelope-open absolute inset-0 w-full h-full object-contain opacity-0"
-            />
+            {/* Inner pocket - cards emerge from here */}
+            <div className="env-pocket" style={envelopeStyles.pocket} />
+            
+            {/* Front face - main envelope body */}
+            <div className="env-front" style={envelopeStyles.front} />
+            
+            {/* Flap - rotates open on hinge */}
+            <div 
+              ref={flapRef}
+              className="env-flap"
+              style={envelopeStyles.flap}
+            >
+              {/* Front face of flap (visible when closed) */}
+              <div style={envelopeStyles.flapFront}>
+                {/* Wax seal decoration */}
+                <div style={envelopeStyles.seal}>
+                  <div style={envelopeStyles.sealInner} />
+                </div>
+              </div>
+              {/* Back face of flap (visible when open) */}
+              <div style={envelopeStyles.flapBack} />
+            </div>
           </div>
         </div>
 
-        {/* Cards container - initially hidden below */}
+        {/* ================================================================
+            CARDS CONTAINER - POSITIONED FOR EMERGENCE
+            ================================================================
+            
+            Cards start with:
+            - y: 200 (below, inside envelope)
+            - z: -50 (pushed back into pocket)
+            - rotateX: -20 (tilted as if lying flat)
+            
+            They animate to y: 0, z: 0, rotateX: 0 during emergence.
+            ================================================================ */}
         <div 
           ref={cardsContainerRef}
           className="cards-container absolute inset-0 flex items-center pointer-events-none opacity-0"
+          style={{ transformStyle: 'preserve-3d' }}
         >
           <div 
             ref={cardsTrackRef}
             className="cards-track flex gap-12 pl-20"
-            style={{ willChange: 'transform' }}
+            style={{ 
+              willChange: 'transform',
+              transformStyle: 'preserve-3d',
+            }}
           >
             {skills.map((skill, index) => (
               <SkillCard key={skill.id} skill={skill} index={index} />
