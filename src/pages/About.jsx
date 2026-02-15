@@ -179,9 +179,11 @@ const About = ({ onContactClick }) => {
               className="relative h-[480px] w-full max-w-[550px]"
             >
               <div className="w-full h-full bg-gradient-to-b from-black/0 to-black/60 rounded-lg overflow-hidden">
-                <div className="w-full h-full bg-gradient-to-br from-dark-50 to-dark-100 flex items-center justify-center">
-                  <span className="text-[200px] font-display font-bold text-primary/20">N</span>
-                </div>
+                <img 
+                  src="/assets/profile/avatar.png" 
+                  alt="INEZA Ndahirwa Sosthene" 
+                  className="w-full h-full object-cover"
+                />
               </div>
             </motion.div>
 
