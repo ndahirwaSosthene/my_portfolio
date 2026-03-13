@@ -170,8 +170,8 @@ const ProjectDetail = () => {
                     </div>
                   ) : (
                     <img 
-                      src={img.url} 
-                      alt={img.alt || `${project.title} - Image ${index + 1}`}
+                      src={typeof img === 'string' ? img : img.url} 
+                      alt={`${project.title} - Image ${index + 1}`}
                       className="w-full h-auto object-cover"
                     />
                   )}
