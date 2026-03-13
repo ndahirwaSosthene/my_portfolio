@@ -38,6 +38,7 @@ export default {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         display: ['Inter Tight', 'system-ui', 'sans-serif'],
         nav: ['Manrope', 'system-ui', 'sans-serif'],
+        serif: ['Playfair Display', 'Georgia', 'serif'],
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-out forwards',

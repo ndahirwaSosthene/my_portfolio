@@ -39,8 +39,8 @@ function App() {
         </AnimatePresence>
       </main>
 
-      {/* Footer on all pages */}
-      <Footer />
+      {/* Footer on all pages except About (which has its own footer) */}
+      {location.pathname !== '/about' && <Footer />}
       
       <ContactModal isOpen={isContactModalOpen} onClose={closeContactModal} />
     </div>
